@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Modelo.Application.Interfaces;
 using Modelo.Domain;
 
 namespace Api_Entra21.Controllers
@@ -7,18 +8,19 @@ namespace Api_Entra21.Controllers
     [ApiController]
     public class AlunoController : Controller
     {
+        private readonly IAlunoApplication _alunoApplication;
+
+        public AlunoController(IAlunoApplication alunoApplication)
+        {
+            _alunoApplication = alunoApplication;
+        }
+
         [HttpGet("BuscarDadosAlunos/{id}")]
         public IActionResult BuscarDadosAluno(int id)
         {
             try
             {
-                Aluno aluno = new Aluno();
-                aluno.Id = 1;
-                aluno.Nome = "João da Silva";
-                aluno.Idade = 20;
-                aluno.Cep = "12345-678";
-
-                return Ok(aluno);
+                return Ok(_alunoApplication.BuscarAluno(id));
             }
             catch (Exception)
             {
