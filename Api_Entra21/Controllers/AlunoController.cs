@@ -18,13 +18,28 @@ namespace Api_Entra21.Controllers
         [HttpGet("BuscarDadosAlunos/{id}")]
         public IActionResult BuscarDadosAluno(int id)
         {
+
+            Retorno<Aluno> retorno = new(null);
+
             try
             {
-                return Ok(_alunoApplication.BuscarAluno(id));
+                var aluno = _alunoApplication.BuscarAluno(id);
+
+                if (aluno != null)
+                {
+                    retorno.CarregaRetorno(aluno, true, "Consulta realizada com sucesso!", 200);
+                }
+                else
+                { 
+                    retorno.CarregaRetorno(aluno, false, $"Aluno com o id {id} não foi encontrado", 204);
+                }
+
+                return Ok(retorno);
             }
             catch (Exception ex)
             {
-                return BadRequest("Erro ao buscar dados do aluno.");
+                retorno.CarregaRetorno(false, ex.Message, 400);
+                return BadRequest(retorno);
             }
         }
 
@@ -32,14 +47,18 @@ namespace Api_Entra21.Controllers
 
         public IActionResult InserirDadosAluno([FromBody] Aluno aluno)
         {
+            Retorno retorno = new();
+
             try
             {
-                _alunoApplication.InserirAluno(aluno);
-                return Ok();
+                var mensagem = _alunoApplication.InserirAluno(aluno);
+                retorno.CarregaRetorno(true, mensagem, 200);
+                return Ok(retorno);
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                retorno.CarregaRetorno(false, ex.Message, 400);
+                return BadRequest(aluno);
             }
         }
 
@@ -47,6 +66,7 @@ namespace Api_Entra21.Controllers
 
         public IActionResult ExcluirDadosAluno(int id)
         {
+
             try
             {
                 _alunoApplication.ExcluirAluno(id);

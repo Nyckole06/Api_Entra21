@@ -18,9 +18,17 @@ namespace Modelo.Application
             return _alunoRepositorio.BuscarId(id);
         }
 
-        public void InserirAluno(Aluno aluno)
+        public string InserirAluno(Aluno aluno)
         {
-            _alunoRepositorio.InserirAluno(aluno);
+            var mensagem = ValidaAluno(aluno);
+
+            if (mensagem == "")
+            {
+                _alunoRepositorio.InserirAluno(aluno);
+
+                mensagem = "Aluno inserido com sucesso.";
+            }
+            return mensagem;
         }
 
         public void ExcluirAluno(int id)
@@ -36,6 +44,33 @@ namespace Modelo.Application
         public void EditarAluno(Aluno aluno)
         {
             _alunoRepositorio.EditarAluno(aluno);
+        }
+
+        private string ValidaAluno(Aluno aluno)
+        {
+            string mensagem = "";
+
+            if (!aluno.Nome.Any())
+            {
+                mensagem = "Não é possível inserir aluno sem nome";
+            }
+
+            if (aluno.Nome.Length > 50)
+            {
+                mensagem = "O nome do aluno deve possuir apenas 50 caracteres.";
+            }
+
+            if (aluno.Cep.Length > 14)
+            {
+                mensagem = "O cep deve possuir apenas 14 caracteres";
+            }
+
+            if (aluno.Idade < 0)
+            {
+                mensagem = "Informe uma idade válida";
+            }
+
+            return mensagem;
         }
     }
 }

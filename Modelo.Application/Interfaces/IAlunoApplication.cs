@@ -11,7 +11,7 @@ namespace Modelo.Application.Interfaces
     {
         Aluno BuscarAluno(int id);
 
-        void InserirAluno(Aluno aluno);
+        string InserirAluno(Aluno aluno);
 
         void ExcluirAluno(int id);
 
